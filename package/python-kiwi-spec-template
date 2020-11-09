@@ -83,9 +83,6 @@ Group:          Development/Languages/Python
 Obsoletes:      python2-kiwi
 Conflicts:      python2-kiwi
 Conflicts:      kiwi-man-pages < %{version}
-%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} || 0%{?debian} || 0%{?ubuntu}
-Recommends:     jing
-%endif
 %if 0%{?ubuntu} || 0%{?debian}
 Requires:       python%{python3_pkgversion}-yaml
 %else
@@ -105,9 +102,6 @@ Requires:       python%{python3_pkgversion}-pyxattr
 %ifarch x86_64
 Requires:       grub2-x86_64-efi
 %endif
-%ifarch %{ix86} x86_64
-Recommends:     gfxboot
-%endif
 Requires:       qemu-tools
 Requires:       squashfs
 Requires:       gptfdisk
@@ -123,16 +117,9 @@ Requires:       qemu-img
 Requires:       squashfs-tools
 Requires:       gdisk
 Requires:       dnf
+Provides:       kiwi-image:tbz
 Provides:       kiwi-packagemanager:dnf
 Provides:       kiwi-packagemanager:yum
-%if 0%{?fedora} || 0%{?rhel} >= 8
-Recommends:     gnupg2
-%endif
-%endif
-%if 0%{?suse_version}
-# If it's available, let's pull it in
-Recommends:     dnf
-Recommends:     gpg2
 %endif
 %if 0%{?fedora} >= 26 || 0%{?suse_version}
 Requires:       zypper
@@ -143,7 +130,6 @@ Requires:       debootstrap
 Requires:       qemu-utils
 Requires:       squashfs-tools
 Requires:       gdisk
-Recommends:     gnupg
 %endif
 Requires:       dosfstools
 Requires:       e2fsprogs
@@ -166,9 +152,6 @@ Requires:       u-boot-tools
 %endif
 %ifarch s390 s390x
 Requires:       s390-tools
-%endif
-%if ! (0%{?rhel} && 0%{?rhel} < 8)
-Recommends:     kiwi-man-pages
 %endif
 
 %description -n python%{python3_pkgversion}-kiwi
@@ -222,14 +205,11 @@ Requires:       cryptsetup
 %if 0%{?fedora} || 0%{?rhel} || 0%{?ubuntu} >= 1804 || 0%{?debian} >= 9
 %if 0%{?rhel} && 0%{?rhel} < 8
 Requires:       btrfs-progs
-%else
-Recommends:     btrfs-progs
 %endif
 Requires:       gdisk
 Requires:       dracut-network
 %else
 %if 0%{?debian} || 0%{?ubuntu}
-Recommends:     btrfs-tools
 Requires:       gdisk
 %else
 Requires:       btrfsprogs
@@ -363,6 +343,104 @@ Group:          %{sysgroup}
 
 %description -n kiwi-man-pages
 Provides manual pages to describe the kiwi commands
+
+%package -n kiwi-host-setup-for-wsl
+Summary:        KIWI - host requirements for building wsl images
+Group:          System/Management
+Provides:       kiwi-image:wsl
+Requires:       fb-util-for-appx
+
+%description -n kiwi-host-setup-for-wsl
+Host setup helper to pull in all packages required/useful on
+the build host to build wsl/appx images
+
+%package -n kiwi-host-setup-for-docker
+Summary:        KIWI - host requirements for docker images
+Group:          System/Management
+Provides:       kiwi-image:docker
+Requires:       skopeo
+Requires:       umoci
+
+%description -n kiwi-host-setup-for-docker
+Host setup helper to pull in all packages required/useful on
+the build host to build docker images
+
+%package -n kiwi-host-setup-for-live-media
+Summary:        KIWI - host requirements for live iso images
+Group:          System/Management
+Provides:       kiwi-image:iso
+Requires:       checkmedia
+Requires:       dosfstools
+Requires:       xorriso
+%ifarch %{ix86} x86_64
+Requires:       syslinux
+Requires:       gfxboot
+%endif
+
+%description -n kiwi-host-setup-for-live-media
+Host setup helper to pull in all packages required/useful on
+the build host to build live iso images.
+
+%package -n kiwi-host-setup-for-install-media
+Summary:        KIWI - host requirements for install iso images
+Group:          System/Management
+Requires:       kiwi-host-setup-for-live
+
+%description -n kiwi-host-setup-for-install-media
+Host setup helper to pull in all packages required/useful on
+the build host to build install iso images
+
+%package -n kiwi-host-setup-for-filesystems
+Summary:        KIWI - host requirements for filesystems
+Group:          System/Management
+Provides:       kiwi-image:pxe
+Provides:       kiwi-image:kis
+Provides:       kiwi-filesystem:btrfs
+Provides:       kiwi-filesystem:ext3
+Provides:       kiwi-filesystem:ext4
+Provides:       kiwi-filesystem:squashfs
+Provides:       kiwi-filesystem:xfs
+Requires:       e2fsprogs
+Requires:       xfsprogs
+%if 0%{?fedora} || 0%{?rhel}
+Requires:       btrfs-progs
+Requires:       squashfs-tools
+%else
+Requires:       btrfsprogs
+Requires:       squashfs
+%endif
+
+%description -n kiwi-host-setup-for-filesystems
+Host setup helper to pull in all packages required/useful on
+the build host to build filesystem images
+
+%package -n kiwi-host-setup-for-disk
+Summary:        KIWI - host requirements for disk images
+Group:          System/Management
+Provides:       kiwi-image:oem
+Provides:       kiwi-image:vmx
+Requires:       kiwi-host-setup-for-filesystems
+
+%description -n kiwi-host-setup-for-disk
+Host setup helper to pull in all packages required/useful on
+the build host to build disk images
+
+%package -n kiwi-host-setup-for-validation
+Summary:        KIWI - host requirements for handling image descriptions better
+Group:          System/Management
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} || 0%{?debian} || 0%{?ubuntu}
+Requires:       jing
+%endif
+%if 0%{?suse_version}
+Requires:       Requires:       python%{python3_pkgversion}-solv
+%endif
+Requires:       Requires:       python%{python3_pkgversion}-anymarkup
+
+%description -n kiwi-host-setup-for-validation
+Host setup helper to pull in all packages required/useful on
+the build host to handling image descriptions better. This also
+includes reading of image descriptions for different markup
+languages
 
 %prep
 %setup -q -n kiwi-%{version}
