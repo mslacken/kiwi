@@ -344,28 +344,24 @@ Group:          %{sysgroup}
 %description -n kiwi-man-pages
 Provides manual pages to describe the kiwi commands
 
-%package -n kiwi-host-setup-for-wsl
-Summary:        KIWI - host requirements for building wsl images
-Group:          System/Management
-Provides:       kiwi-image:wsl
-Requires:       fb-util-for-appx
-
-%description -n kiwi-host-setup-for-wsl
-Host setup helper to pull in all packages required/useful on
-the build host to build wsl/appx images
-
-%package -n kiwi-host-setup-for-docker
-Summary:        KIWI - host requirements for docker images
+%package -n kiwi-host-setup-for-building-containers
+Summary:        KIWI - host requirements for container images
 Group:          System/Management
 Provides:       kiwi-image:docker
+Provides:       kiwi-image:wsl
+%if 0%{?suse_version}
 Requires:       skopeo
+Requires:       fb-util-for-appx
+%else
+Requires:       buildah
+%endif
 Requires:       umoci
 
-%description -n kiwi-host-setup-for-docker
+%description -n kiwi-host-setup-for-building-containers
 Host setup helper to pull in all packages required/useful on
-the build host to build docker images
+the build host to build container images e.g docker, wsl
 
-%package -n kiwi-host-setup-for-live-media
+%package -n kiwi-host-setup-for-building-live-media
 Summary:        KIWI - host requirements for live iso images
 Group:          System/Management
 Provides:       kiwi-image:iso
@@ -374,23 +370,25 @@ Requires:       dosfstools
 Requires:       xorriso
 %ifarch %{ix86} x86_64
 Requires:       syslinux
+%if 0%{?suse_version}
 Requires:       gfxboot
 %endif
+%endif
 
-%description -n kiwi-host-setup-for-live-media
+%description -n kiwi-host-setup-for-building-live-media
 Host setup helper to pull in all packages required/useful on
 the build host to build live iso images.
 
-%package -n kiwi-host-setup-for-install-media
+%package -n kiwi-host-setup-for-building-install-media
 Summary:        KIWI - host requirements for install iso images
 Group:          System/Management
-Requires:       kiwi-host-setup-for-live
+Requires:       kiwi-host-setup-for-building-live-media
 
-%description -n kiwi-host-setup-for-install-media
+%description -n kiwi-host-setup-for-building-install-media
 Host setup helper to pull in all packages required/useful on
 the build host to build install iso images
 
-%package -n kiwi-host-setup-for-filesystems
+%package -n kiwi-host-setup-for-building-filesystem-images
 Summary:        KIWI - host requirements for filesystems
 Group:          System/Management
 Provides:       kiwi-image:pxe
@@ -402,30 +400,33 @@ Provides:       kiwi-filesystem:squashfs
 Provides:       kiwi-filesystem:xfs
 Requires:       e2fsprogs
 Requires:       xfsprogs
-%if 0%{?fedora} || 0%{?rhel}
+%if 0%{?fedora} || 0%{?rhel} < 8 || 0%{?ubuntu} >= 1804 || 0%{?debian} >= 9
 Requires:       btrfs-progs
-Requires:       squashfs-tools
 %else
 Requires:       btrfsprogs
+%endif
+%if 0%{?fedora} || 0%{?rhel} || 0%{?ubuntu} || 0%{?debian} 
+Requires:       squashfs-tools
+%else
 Requires:       squashfs
 %endif
 
-%description -n kiwi-host-setup-for-filesystems
+%description -n kiwi-host-setup-for-building-filesystem-images
 Host setup helper to pull in all packages required/useful on
 the build host to build filesystem images
 
-%package -n kiwi-host-setup-for-disk
+%package -n kiwi-host-setup-for-building-disk-images
 Summary:        KIWI - host requirements for disk images
 Group:          System/Management
 Provides:       kiwi-image:oem
 Provides:       kiwi-image:vmx
-Requires:       kiwi-host-setup-for-filesystems
+Requires:       kiwi-host-setup-for-building-filesystem-images
 
-%description -n kiwi-host-setup-for-disk
+%description -n kiwi-host-setup-for-building-disk-images
 Host setup helper to pull in all packages required/useful on
 the build host to build disk images
 
-%package -n kiwi-host-setup-for-validation
+%package -n kiwi-host-setup-for-image-validation
 Summary:        KIWI - host requirements for handling image descriptions better
 Group:          System/Management
 %if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} || 0%{?debian} || 0%{?ubuntu}
@@ -436,7 +437,7 @@ Requires:       python%{python3_pkgversion}-solv
 %endif
 Requires:       python%{python3_pkgversion}-anymarkup
 
-%description -n kiwi-host-setup-for-validation
+%description -n kiwi-host-setup-for-image-validation
 Host setup helper to pull in all packages required/useful on
 the build host to handling image descriptions better. This also
 includes reading of image descriptions for different markup
