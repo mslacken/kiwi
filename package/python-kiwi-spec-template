@@ -363,8 +363,8 @@ Requires:       umoci
 Host setup helper to pull in all packages required/useful on
 the build host to build container images e.g docker, wsl
 
-%package -n kiwi-host-setup-for-building-live-media
-Summary:        KIWI - host requirements for live iso images
+%package -n kiwi-host-setup-for-building-iso-media
+Summary:        KIWI - host requirements for live and install iso images
 Group:          System/Management
 Obsoletes:      kiwi-image-iso-requires
 Provides:       kiwi-image:iso
@@ -378,18 +378,9 @@ Requires:       gfxboot
 %endif
 %endif
 
-%description -n kiwi-host-setup-for-building-live-media
+%description -n kiwi-host-setup-for-building-iso-media
 Host setup helper to pull in all packages required/useful on
-the build host to build live iso images.
-
-%package -n kiwi-host-setup-for-building-install-media
-Summary:        KIWI - host requirements for install iso images
-Group:          System/Management
-Requires:       kiwi-host-setup-for-building-live-media
-
-%description -n kiwi-host-setup-for-building-install-media
-Host setup helper to pull in all packages required/useful on
-the build host to build install iso images
+the build host to build live and install iso images.
 
 %package -n kiwi-host-setup-for-building-filesystem-images
 Summary:        KIWI - host requirements for filesystems
@@ -567,10 +558,7 @@ fi
 %files -n kiwi-host-setup-for-building-containers
 %defattr(-, root, root)
 
-%files -n kiwi-host-setup-for-building-live-media
-%defattr(-, root, root)
-
-%files -n kiwi-host-setup-for-building-install-media
+%files -n kiwi-host-setup-for-building-iso-media
 %defattr(-, root, root)
 
 %files -n kiwi-host-setup-for-building-filesystem-images
