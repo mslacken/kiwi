@@ -432,9 +432,9 @@ Group:          System/Management
 Requires:       jing
 %endif
 %if 0%{?suse_version}
-Requires:       Requires:       python%{python3_pkgversion}-solv
+Requires:       python%{python3_pkgversion}-solv
 %endif
-Requires:       Requires:       python%{python3_pkgversion}-anymarkup
+Requires:       python%{python3_pkgversion}-anymarkup
 
 %description -n kiwi-host-setup-for-validation
 Host setup helper to pull in all packages required/useful on
