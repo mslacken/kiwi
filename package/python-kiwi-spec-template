@@ -352,12 +352,12 @@ Obsoletes:      kiwi-image-wsl-requires
 Provides:       kiwi-image:docker
 Provides:       kiwi-image:wsl
 %if 0%{?suse_version}
-Requires:       skopeo
+Requires:       umoci
 Requires:       fb-util-for-appx
 %else
 Requires:       buildah
 %endif
-Requires:       umoci
+Requires:       skopeo
 
 %description -n kiwi-host-setup-for-building-containers
 Host setup helper to pull in all packages required/useful on
