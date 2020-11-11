@@ -564,4 +564,22 @@ fi
 %endif
 %endif
 
+%files -n kiwi-host-setup-for-building-containers
+%defattr(-, root, root)
+
+%files -n kiwi-host-setup-for-building-live-media
+%defattr(-, root, root)
+
+%files -n kiwi-host-setup-for-building-install-media
+%defattr(-, root, root)
+
+%files -n kiwi-host-setup-for-building-filesystem-images
+%defattr(-, root, root)
+
+%files -n kiwi-host-setup-for-building-disk-images
+%defattr(-, root, root)
+
+%files -n kiwi-host-setup-for-image-validation
+%defattr(-, root, root)
+
 %changelog
